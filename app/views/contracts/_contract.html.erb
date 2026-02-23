@@ -1,0 +1,17 @@
+<div id="<%= dom_id contract %>">
+  <p>
+    <strong>File:</strong>
+    <%= link_to contract.file.filename, contract.file if contract.file.attached? %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= contract.status %>
+  </p>
+
+  <p>
+    <strong>Analysis:</strong>
+    <%= contract.analysis %>
+  </p>
+
+</div>
