@@ -1,24 +1,36 @@
-# README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# Rails Contract Analyzer
 
-Things you may want to cover:
+## Setup
 
-* Ruby version
+1. **Ruby version:** 3.1+
+2. **Install dependencies:**
+	- `bundle install`
+	- `yarn install`
+3. **Database setup:**
+	- `rails db:create db:migrate db:seed`
+4. **Environment variables:**
+	- Set `OPENAI_API_KEY` for clause extraction service
 
-* System dependencies
+## Running
 
-* Configuration
+Start the app:
+```
+bin/dev
+```
 
-* Database creation
+## Testing
 
-* Database initialization
+Run tests:
+```
+bundle exec rspec
+```
 
-* How to run the test suite
+## Features
+- Contract upload and analysis
+- Clause extraction using LLM
+- Risk flagging
+- Professional UI
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Deployment
+Standard Rails deployment. Ensure environment variables are set.
