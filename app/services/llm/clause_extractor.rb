@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'openai'
 
 module Llm
@@ -7,21 +5,25 @@ module Llm
     CHUNK_SIZE = 2000
     OVERLAP = 200
 
+    # Initializes the ClauseExtractor with OpenAI client
     def initialize(api_key: ENV['OPENAI_API_KEY'])
       @client = OpenAI::Client.new(access_token: api_key)
     end
 
     # Main entry point: returns array of clause hashes
+    # Handles chunking, API calls, and error logging
     def extract_clauses(contract_text)
       chunks = chunk_text(contract_text)
       results = []
-      chunks.each do |chunk|
+      chunks.each_with_index do |chunk, idx|
         begin
           response = call_openai(chunk)
           parsed = parse_response(response)
           results.concat(parsed)
-        rescue => e
-          Rails.logger.error("OpenAI error: #{e.message}")
+          Rails.logger.info("Chunk #{idx + 1}/#{chunks.size} processed successfully.")
+        rescue StandardError => e
+          Rails.logger.error("ClauseExtractor failed on chunk #{idx + 1}: #{e.class} - #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
         end
       end
       results
