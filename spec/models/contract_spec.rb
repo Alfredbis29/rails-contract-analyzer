@@ -15,4 +15,13 @@ RSpec.describe Contract, type: :model do
     contract = Contract.new(title: 'Sample', content: 'Sample content')
     expect(contract).to be_valid
   end
+
+  describe '.with_high_risk' do
+    it 'returns contracts with high risk flags' do
+      high_risk = Contract.create!(title: 'High', content: '...', risk_flags: ['high'])
+      low_risk = Contract.create!(title: 'Low', content: '...', risk_flags: ['low'])
+      expect(Contract.with_high_risk).to include(high_risk)
+      expect(Contract.with_high_risk).not_to include(low_risk)
+    end
+  end
 end
