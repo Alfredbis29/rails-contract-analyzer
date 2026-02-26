@@ -4,6 +4,10 @@ class Contract < ApplicationRecord
 
   # extracted_clauses: JSONB array of clause hashes
   # risk_flags: JSONB array of high/medium risk clause hashes
+
+  # Scope to filter contracts with high risk flags
+  scope :with_high_risk, -> { where("risk_flags::text LIKE '%high%'") }
+
   # Validations
   validates :title, presence: true, length: { maximum: 255 }
   validates :content, presence: true
