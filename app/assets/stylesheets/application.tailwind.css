@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+.risk-flag {
+	background-color: #ffe5e5;
+	color: #b91c1c;
+	padding: 0.2em 0.5em;
+	border-radius: 0.25em;
+	font-weight: bold;
+}
