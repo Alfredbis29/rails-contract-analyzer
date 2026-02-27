@@ -24,4 +24,16 @@ RSpec.describe Contract, type: :model do
       expect(Contract.with_high_risk).not_to include(low_risk)
     end
   end
+
+  describe 'status enum' do
+    it 'defaults to draft' do
+      contract = Contract.create!(title: 'Enum', content: '...', risk_flags: [])
+      expect(contract.status).to eq('draft')
+    end
+
+    it 'can be set to active' do
+      contract = Contract.create!(title: 'Enum2', content: '...', risk_flags: [], status: :active)
+      expect(contract.status).to eq('active')
+    end
+  end
 end
