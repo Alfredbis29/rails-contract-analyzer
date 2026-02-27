@@ -31,6 +31,8 @@ bundle exec rspec
 - Clause extraction using LLM
 - Risk flagging
 - Professional UI
+- Pagination for contracts list
+- Contract status management (draft, active, archived)
 
 ## Deployment
 Standard Rails deployment. Ensure environment variables are set.
