@@ -14,7 +14,13 @@
   <% if @contract.risk_flags.present? %>
     <div class="mt-4">
       <strong>Risk Flags:</strong>
-      <pre class="bg-red-100 p-2 rounded text-xs"><%= JSON.pretty_generate(@contract.risk_flags) %></pre>
+      <ul>
+        <% @contract.risk_flags.each do |flag| %>
+          <li class="badge-risk mb-1">
+            <%= flag['text'] %> (<%= flag['risk_level'] %>)
+          </li>
+        <% end %>
+      </ul>
     </div>
   <% end %>
 </div>

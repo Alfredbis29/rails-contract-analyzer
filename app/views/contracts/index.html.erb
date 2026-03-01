@@ -24,6 +24,8 @@
   </tbody>
 </table>
 
-<%= paginate @contracts %>
+<div class="flex justify-center my-4">
+  <%= paginate @contracts, theme: 'tailwind' %>
+</div>
 
 <%= link_to "New contract", new_contract_path, class: "btn btn-success" %>
