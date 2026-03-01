@@ -1,4 +1,10 @@
 class ContractsController < ApplicationController
+  # POST /contracts/:id/analyze.json
+  def analyze
+    contract = Contract.find(params[:id])
+    ContractAnalysisJob.perform_later(contract.id)
+    render json: { message: 'Analysis started', contract_id: contract.id }, status: :accepted
+  end
   before_action :set_contract, only: %i[ show edit update destroy ]
 
   # GET /contracts or /contracts.json

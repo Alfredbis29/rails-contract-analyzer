@@ -26,11 +26,27 @@ Run tests:
 bundle exec rspec
 ```
 
+
+
 ## Features
+
 - Contract upload and analysis
+- Upload contracts
+- Automatic clause extraction
+- Risk flag detection
+- Contract status tracking
+
 - Clause extraction using LLM
+- POST /contracts: Upload and analyze a contract
+- GET /contracts/:id: View contract details
+
 - Risk flagging
+Seed demo contracts with:
+	rails db:seed
+
 - Professional UI
+Run tests with:
+	rspec
 - Pagination for contracts list
 - Contract status management (draft, active, archived)
 

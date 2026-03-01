@@ -15,16 +15,24 @@ module Llm
     def extract_clauses(contract_text)
       chunks = chunk_text(contract_text)
       results = []
+      errors = []
       chunks.each_with_index do |chunk, idx|
         begin
           response = call_openai(chunk)
           parsed = parse_response(response)
           results.concat(parsed)
           Rails.logger.info("Chunk #{idx + 1}/#{chunks.size} processed successfully.")
+        rescue OpenAI::Error => e
+          Rails.logger.error("OpenAI error on chunk #{idx + 1}: #{e.class} - #{e.message}")
+          errors << { chunk: idx + 1, error: e.message }
         rescue StandardError => e
           Rails.logger.error("ClauseExtractor failed on chunk #{idx + 1}: #{e.class} - #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
+          errors << { chunk: idx + 1, error: e.message }
         end
+      end
+      if errors.any?
+        Rails.logger.warn("Clause extraction completed with errors: #{errors}")
       end
       results
     end
