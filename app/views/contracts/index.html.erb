@@ -8,6 +8,7 @@
     <tr class="bg-gray-100">
       <th class="px-4 py-2">Title</th>
       <th class="px-4 py-2">Created At</th>
+      <th class="px-4 py-2">Status</th>
       <th class="px-4 py-2">Actions</th>
     </tr>
   </thead>
@@ -16,6 +17,7 @@
       <tr class="border-t">
         <td class="px-4 py-2"><%= contract.title %></td>
         <td class="px-4 py-2"><%= contract.created_at.strftime('%Y-%m-%d') %></td>
+        <td class="px-4 py-2"><%= status_badge(contract.status) %></td>
         <td class="px-4 py-2">
           <%= link_to "Show", contract, class: "btn btn-sm btn-primary" %>
         </td>

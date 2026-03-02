@@ -5,7 +5,8 @@ group :development, :test do
   # Faker for generating test data
   gem 'faker'
   # Kaminari for pagination
-  gem 'kaminari'
+gem 'kaminari'
+gem 'kaminari-tailwind'
 end
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
@@ -21,7 +22,6 @@ end
 # --- Redline App: Rails 7.1 Stack ---
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
-
 
 
 # Use Rails 7.1
