@@ -1,16 +1,6 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-                      # Placeholder change 11 for commit demonstration
-                    # Placeholder change 10 for commit demonstration
-                  # Placeholder change 9 for commit demonstration
-                # Placeholder change 8 for commit demonstration
-              # Placeholder change 7 for commit demonstration
-            # Placeholder change 6 for commit demonstration
-          # Placeholder change 5 for commit demonstration
-        # Placeholder change 4 for commit demonstration
-      # Placeholder change 3 for commit demonstration
-    # Placeholder change 2 for commit demonstration
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -33,8 +23,6 @@ Rails.application.configure do
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
-
-    # Placeholder change 1 for commit demonstration
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = 'http://assets.example.com'
