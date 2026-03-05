@@ -1,286 +1,65 @@
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
-<style>
-  :root {
-    --ink: #0f0e0d;
-    --paper: #f5f2ed;
-    --cream: #ede9e2;
-    --amber: #c8860a;
-    --amber-light: #f5a623;
-    --muted: #8a8478;
-    --border: #d6d0c4;
-    --green: #2d6a4f;
-    --green-bg: #d8f3dc;
-    --orange: #8b3a00;
-    --orange-bg: #ffe8d6;
-    --blue: #1a3a5c;
-    --blue-bg: #ddeeff;
-  }
-
-  .contracts-page {
-    font-family: 'Instrument Sans', sans-serif;
-    background-color: var(--paper);
-    min-height: 100vh;
-    padding: 48px 40px;
-    color: var(--ink);
-  }
-
-  .notice-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--green-bg);
-    color: var(--green);
-    padding: 12px 18px;
-    border-radius: 6px;
-    font-size: 13.5px;
-    font-weight: 500;
-    margin-bottom: 36px;
-    border-left: 3px solid var(--green);
-    animation: slideDown 0.4s ease;
-  }
-
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .page-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 1.5px solid var(--border);
-  }
-
-  .page-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--amber);
-    margin-bottom: 6px;
-  }
-
-  .page-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 42px;
-    line-height: 1;
-    color: var(--ink);
-    margin: 0;
-  }
-
-  .page-title em {
-    font-style: italic;
-    color: var(--amber);
-  }
-
-  .new-contract-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--ink);
-    color: #fff;
-    text-decoration: none;
-    padding: 12px 22px;
-    border-radius: 6px;
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition: background 0.18s, transform 0.12s;
-  }
-
-  .new-contract-btn:hover {
-    background: var(--amber);
-    transform: translateY(-1px);
-  }
-
-  .table-card {
-    background: #fff;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(15,14,13,0.06);
-  }
-
-  table.contracts-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .contracts-table thead tr {
-    background: var(--cream);
-    border-bottom: 1.5px solid var(--border);
-  }
-
-  .contracts-table th {
-    font-family: 'DM Mono', monospace;
-    font-size: 10.5px;
-    font-weight: 500;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 14px 20px;
-    text-align: left;
-  }
-
-  .contracts-table th:last-child { text-align: right; }
-
-  .contracts-table tbody tr {
-    border-bottom: 1px solid var(--cream);
-    transition: background 0.14s;
-    animation: rowFade 0.3s ease both;
-  }
-
-  .contracts-table tbody tr:last-child { border-bottom: none; }
-  .contracts-table tbody tr:hover { background: #faf9f7; }
-
-  @keyframes rowFade {
-    from { opacity: 0; transform: translateX(-6px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-
-  .contracts-table tbody tr:nth-child(1) { animation-delay: 0.00s; }
-  .contracts-table tbody tr:nth-child(2) { animation-delay: 0.04s; }
-  .contracts-table tbody tr:nth-child(3) { animation-delay: 0.08s; }
-  .contracts-table tbody tr:nth-child(4) { animation-delay: 0.12s; }
-  .contracts-table tbody tr:nth-child(5) { animation-delay: 0.16s; }
-  .contracts-table tbody tr:nth-child(6) { animation-delay: 0.20s; }
-  .contracts-table tbody tr:nth-child(7) { animation-delay: 0.24s; }
-  .contracts-table tbody tr:nth-child(8) { animation-delay: 0.28s; }
-
-  .contracts-table td {
-    padding: 16px 20px;
-    vertical-align: middle;
-    font-size: 14px;
-  }
-
-  .contract-title {
-    font-weight: 600;
-    color: var(--ink);
-    font-size: 14.5px;
-  }
-
-  .contract-date {
-    font-family: 'DM Mono', monospace;
-    font-size: 12.5px;
-    color: var(--muted);
-  }
-
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 11px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .status-badge::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-
-  .status-badge.active  { background: var(--green-bg);  color: var(--green); }
-  .status-badge.active::before  { background: var(--green); }
-  .status-badge.pending { background: var(--orange-bg); color: var(--orange); }
-  .status-badge.pending::before { background: var(--amber-light); }
-  .status-badge.draft   { background: var(--blue-bg);   color: var(--blue); }
-  .status-badge.draft::before   { background: var(--blue); }
-  .status-badge.expired { background: #f0f0f0; color: #666; }
-  .status-badge.expired::before { background: #aaa; }
-
-  .action-cell { text-align: right; }
-
-  .show-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--amber);
-    text-decoration: none;
-    padding: 6px 14px;
-    border: 1.5px solid var(--amber);
-    border-radius: 5px;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .show-link:hover { background: var(--amber); color: #fff; }
-
-  .pagination-row {
-    display: flex;
-    justify-content: center;
-    padding: 24px 0 8px;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 64px 32px;
-    color: var(--muted);
-    font-size: 15px;
-  }
-</style>
-
 <% if notice.present? %>
-  <div class="notice-bar">
+  <div class="flex items-center gap-2 bg-green-50 border-l-4 border-green-600 text-green-800 text-sm font-medium px-4 py-3 rounded-md mb-8">
     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     <%= notice %>
   </div>
 <% end %>
 
-<div class="contracts-page">
+<div class="min-h-screen bg-stone-50 px-10 py-12 font-sans">
 
-  <div class="page-header">
+  <%# Header %>
+  <div class="flex items-end justify-between pb-6 mb-8 border-b border-stone-200">
     <div>
-      <div class="page-eyebrow">Document Management</div>
-      <h1 class="page-title">All <em>Contracts</em></h1>
+      <p class="text-xs font-semibold tracking-widest uppercase text-amber-600 mb-1">Document Management</p>
+      <h1 class="text-4xl font-bold text-stone-900">All Contracts</h1>
     </div>
-    <%= link_to new_contract_path, class: "new-contract-btn" do %>
+    <%= link_to new_contract_path,
+          class: "inline-flex items-center gap-2 bg-stone-900 hover:bg-amber-600 text-white text-sm font-semibold px-5 py-3 rounded-lg transition-colors duration-150" do %>
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       New Contract
     <% end %>
   </div>
 
-  <div class="table-card">
-    <table class="contracts-table">
+  <%# Table card %>
+  <div class="bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm">
+    <table class="w-full border-collapse">
       <thead>
-        <tr>
-          <th>Title</th>
-          <th>Created</th>
-          <th>Status</th>
-          <th>Actions</th>
+        <tr class="bg-stone-100 border-b border-stone-200">
+          <th class="text-left text-xs font-semibold tracking-widest uppercase text-stone-400 px-5 py-3">Title</th>
+          <th class="text-left text-xs font-semibold tracking-widest uppercase text-stone-400 px-5 py-3">Created</th>
+          <th class="text-left text-xs font-semibold tracking-widest uppercase text-stone-400 px-5 py-3">Status</th>
+          <th class="text-right text-xs font-semibold tracking-widest uppercase text-stone-400 px-5 py-3">Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if @contracts.any? %>
           <% @contracts.each do |contract| %>
-            <tr>
-              <td class="contract-title"><%= contract.title %></td>
-              <td class="contract-date"><%= contract.created_at.strftime('%b %d, %Y') %></td>
-              <td><%= status_badge(contract.status) %></td>
-              <td class="action-cell">
-                <%= link_to contract, class: "show-link" do %>
+            <tr class="border-b border-stone-100 last:border-0 hover:bg-stone-50 transition-colors duration-100">
+              <td class="px-5 py-4 text-sm font-semibold text-stone-900"><%= contract.title %></td>
+              <td class="px-5 py-4 text-xs font-mono text-stone-400"><%= contract.created_at.strftime('%b %d, %Y') %></td>
+              <td class="px-5 py-4"><%= status_badge(contract.status) %></td>
+              <td class="px-5 py-4 text-right">
+                <%= link_to contract,
+                      class: "inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 border border-amber-500 hover:bg-amber-600 hover:text-white px-3 py-1.5 rounded transition-colors duration-150" do %>
                   View
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 <% end %>
               </td>
             </tr>
           <% end %>
         <% else %>
-          <tr><td colspan="4"><div class="empty-state">No contracts yet — create your first one.</div></td></tr>
+          <tr>
+            <td colspan="4" class="px-5 py-16 text-center text-sm text-stone-400">
+              No contracts yet — create your first one.
+            </td>
+          </tr>
         <% end %>
       </tbody>
     </table>
   </div>
 
-  <div class="pagination-row">
+  <%# Pagination %>
+  <div class="flex justify-center mt-6">
     <%= paginate @contracts, theme: 'tailwind' %>
   </div>
 
