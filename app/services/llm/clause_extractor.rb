@@ -1,84 +1,73 @@
-require 'openai'
+class Contract < ApplicationRecord
+  # FIX 5: purge the attached blob when the contract is destroyed
+  has_one_attached :file, dependent: :purge
 
-module Llm
-  class ClauseExtractor
-    CHUNK_SIZE = 2000
-    OVERLAP = 200
+  # extracted_clauses: JSONB array of clause hashes
+  # risk_flags: JSONB array of risk hashes, each with a "severity" key ("low"/"medium"/"high")
 
-    # Initializes the ClauseExtractor with OpenAI client
-    def initialize(api_key: ENV['OPENAI_API_KEY'])
-      @client = OpenAI::Client.new(access_token: api_key)
+  enum status: { draft: 0, active: 1, archived: 2, expired: 3, pending: 4 }, _prefix: true
+
+  scope :with_high_risk, -> {
+    where("risk_flags @> ?", '[{"severity":"high"}]')
+  }
+
+  # FIX 4: validate file content type and size when a file is attached
+  ACCEPTED_CONTENT_TYPES = %w[application/pdf].freeze
+  MAX_FILE_SIZE_MB        = 20
+
+  validates :title,   presence: true,
+                      uniqueness: { case_sensitive: false },
+                      length: { maximum: 255 }
+  validates :content, presence: true, length: { minimum: 100 }
+
+  # FIX 1: removed the no-op `validates :x, allow_nil: true` lines — they do nothing
+  # and imply a false sense of validation coverage.
+
+  validate :extracted_clauses_format
+  validate :risk_flags_format
+  validate :acceptable_file, if: -> { file.attached? }
+
+  private
+
+  def extracted_clauses_format
+    return if extracted_clauses.nil?
+
+    unless extracted_clauses.is_a?(Array) && extracted_clauses.all? { |c| c.is_a?(Hash) }
+      errors.add(:extracted_clauses, "must be an array of clause hashes")
+    end
+  end
+
+  def risk_flags_format
+    return if risk_flags.nil?
+
+    unless risk_flags.is_a?(Array) && risk_flags.all? { |f| f.is_a?(Hash) }
+      errors.add(:risk_flags, "must be an array of risk flag hashes")
+      return
     end
 
-    # Main entry point: returns array of clause hashes
-    # Handles chunking, API calls, and error logging
-    def extract_clauses(contract_text)
-      chunks = chunk_text(contract_text)
-      results = []
-      errors = []
-      chunks.each_with_index do |chunk, idx|
-        begin
-          response = call_openai(chunk)
-          parsed = parse_response(response)
-          results.concat(parsed)
-          Rails.logger.info("Chunk #{idx + 1}/#{chunks.size} processed successfully.")
-        rescue OpenAI::Error => e
-          Rails.logger.error("OpenAI error on chunk #{idx + 1}: #{e.class} - #{e.message}")
-          errors << { chunk: idx + 1, error: e.message }
-        rescue StandardError => e
-          Rails.logger.error("ClauseExtractor failed on chunk #{idx + 1}: #{e.class} - #{e.message}")
-          Rails.logger.error(e.backtrace.join("\n"))
-          errors << { chunk: idx + 1, error: e.message }
-        end
+    valid_severities = %w[low medium high]
+
+    risk_flags.each_with_index do |flag, i|
+      # FIX 2: support both string and symbol keys for robustness
+      severity = flag["severity"] || flag[:severity]
+
+      # FIX 3: explicitly handle nil so the error message is not misleadingly blank
+      if severity.nil?
+        errors.add(:risk_flags, "element #{i} is missing the 'severity' key")
+      elsif !valid_severities.include?(severity)
+        errors.add(:risk_flags, "element #{i} has invalid severity '#{severity}' (must be low, medium, or high)")
       end
-      if errors.any?
-        Rails.logger.warn("Clause extraction completed with errors: #{errors}")
-      end
-      results
+    end
+  end
+
+  # FIX 4: reject disallowed file types and oversized uploads
+  def acceptable_file
+    unless file.content_type.in?(ACCEPTED_CONTENT_TYPES)
+      errors.add(:file, "must be a PDF (got #{file.content_type})")
     end
 
-    private
-
-    def chunk_text(text)
-      return [] if text.blank?
-      chunks = []
-      i = 0
-      while i < text.length
-        chunk = text[i, CHUNK_SIZE]
-        chunks << chunk
-        i += (CHUNK_SIZE - OVERLAP)
-      end
-      chunks
-    end
-
-    def call_openai(chunk)
-      prompt = <<~PROMPT
-        Extract all clauses from the following contract text. For each clause, return a JSON object with:
-        - clause_type (string)
-        - risk_level (string: low, medium, high)
-        - risk_reason (string)
-        - suggested_redline (string)
-        Respond as a JSON array of objects. Only output valid JSON.
-        Contract text:
-        #{chunk}
-      PROMPT
-      @client.chat(
-        parameters: {
-          model: "gpt-4",
-          messages: [
-            { role: "system", content: "You are a legal contract clause extraction assistant." },
-            { role: "user", content: prompt }
-          ],
-          temperature: 0.2
-        }
-      )['choices'][0]['message']['content']
-    end
-
-    def parse_response(response)
-      JSON.parse(response)
-    rescue JSON::ParserError => e
-      Rails.logger.error("JSON parse error: #{e.message}")
-      []
+    if file.byte_size > MAX_FILE_SIZE_MB.megabytes
+      errors.add(:file, "must be smaller than #{MAX_FILE_SIZE_MB}MB")
     end
   end
 end
